@@ -85,12 +85,12 @@ def create_answer_blocks():
     return answer_blocks
 
 def check_answer(selected_option):
-    global running, current_question, show_question_time
-    if selected_option != correct_answer:
-        show_game_over_screen()
+    global is_answer_correct
+    if selected_option == correct_answer:
+        is_answer_correct = True  # Resposta correta
     else:
-        current_question = "Você acertou!"
-        show_question_time = pygame.time.get_ticks() 
+        is_answer_correct = False  # Resposta errada
+
 
 def show_start_screen():
     start_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 - 25, 150, 50)
@@ -143,7 +143,7 @@ def game_loop():
     running = True
     clock = pygame.time.Clock()
 
-    generate_question() 
+    generate_question()  # Gera a primeira questão
     answer_blocks = []
     answer_timer_active = False
     answer_timer = 0
@@ -172,12 +172,24 @@ def game_loop():
                     selected_option = options[int(event.key) - pygame.K_1]
                     check_answer(selected_option)
 
-            elif event.type == question_timer_event:
+            # Timer da questão: Atualiza o tempo
+            if event.type == question_timer_event:
                 generate_question() 
                 answer_blocks = create_answer_blocks()  
-                show_question_time = pygame.time.get_ticks() 
+                show_question_time = pygame.time.get_ticks()  # Marca o tempo de exibição da questão
+                
         move_player(player_lane)
 
+        # Checar se o tempo da questão expirou
+        if show_question_time > 0 and (pygame.time.get_ticks() - show_question_time) > question_display_duration:
+            current_question = ""  # Remove a questão
+            show_question_time = 0  # Para de mostrar a pergunta
+            # Se o tempo passou e o jogador não respondeu corretamente, fim de jogo
+            if not is_answer_correct:
+                show_game_over_screen()
+                running = False
+
+        # Obstacle movement
         for obstacle in obstacles[:]:
             obstacle.y += obstacle_speed
             if obstacle.y > HEIGHT:
@@ -190,23 +202,29 @@ def game_loop():
         player_rect.topleft = (player_x, player_y)
         pygame.draw.rect(screen, (0, 0, 0), player_rect) 
 
+        # Desenhar obstáculos
         for obstacle in obstacles:
             pygame.draw.rect(screen, (200, 0, 0), obstacle)  
 
+        # Mostrar a questão se o tempo permitir
         if show_question_time > 0 and (pygame.time.get_ticks() - show_question_time) < question_display_duration:
             question_rect = pygame.Rect(WIDTH // 4 + 50, HEIGHT // 3 + 20, WIDTH // 2 - 100, 60)  
             pygame.draw.rect(screen, (0, 0, 0), question_rect) 
             draw_text(current_question, font, (255, 255, 255), screen, question_rect.centerx, question_rect.centery, center=True)
 
+        # Desenhar blocos de resposta
         for block, option in answer_blocks:
             block.y += obstacle_speed 
             pygame.draw.rect(screen, (0, 200, 0), block) 
             draw_text(str(option), font, (255, 255, 255), screen, block.x + 10, block.y + 10)
 
+        # Mostrar pontuação
         draw_text(f"Score: {score}", font, (0, 0, 0), screen, 10, 10)
 
         pygame.display.flip()
         clock.tick(30)
+
+
 
 show_start_screen()
 game_loop()
