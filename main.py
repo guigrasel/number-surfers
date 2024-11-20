@@ -9,7 +9,7 @@ pygame.init()
 # Dimensões da janela
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Subway Surfers Clone")
+pygame.display.set_caption("Number Surfers")
 
 # Iniciar o jogo
 show_start_screen(screen, WIDTH, HEIGHT)

@@ -3,7 +3,7 @@ import random
 from screens import show_game_over_screen
 from helpers import draw_text
 from player import Player
-
+from scores import save_score
 
 def game_loop(screen, WIDTH, HEIGHT):
     # Configurações iniciais
@@ -89,6 +89,7 @@ def game_loop(screen, WIDTH, HEIGHT):
         clock.tick(30)
 
     if not running:
+        save_score(score)  # Salva o score ao terminar o jogo
         restart = show_game_over_screen(screen, WIDTH, HEIGHT, score)
         if restart:
             game_loop(screen, WIDTH, HEIGHT)
