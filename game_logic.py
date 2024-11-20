@@ -7,13 +7,25 @@ from scores import save_score
 
 def game_loop(screen, WIDTH, HEIGHT):
     # Configurações iniciais
-    PLAYER_WIDTH, PLAYER_HEIGHT = 70, 70
-    OBSTACLE_WIDTH, OBSTACLE_HEIGHT = 80, 80
+    PLAYER_WIDTH, PLAYER_HEIGHT = 100, 100
+    OBSTACLE_WIDTH, OBSTACLE_HEIGHT = 110, 110
     LANE_POSITIONS = [
-        125,
+        110,
         WIDTH // 2 - PLAYER_WIDTH // 2,
-        600,
+        590,
     ]
+
+    # Carregar as imagens dos obstáculos
+    try:
+        obstacle_image1 = pygame.image.load("obstaculo1.png")
+        obstacle_image1 = pygame.transform.scale(obstacle_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+        obstacle_image2 = pygame.image.load("obstaculo2.png")
+        obstacle_image2 = pygame.transform.scale(obstacle_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+        obstacle_image3 = pygame.image.load("obstaculo3.png")
+        obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+    except pygame.error as e:
+        print(f"Erro ao carregar a imagem de obstáculo: {e}")
+        pygame.quit()
 
     # Inicializar o jogador
     player = Player(
@@ -46,7 +58,7 @@ def game_loop(screen, WIDTH, HEIGHT):
     font = pygame.font.SysFont(None, 36)
 
     try:
-        background_image = pygame.image.load("background.png")
+        background_image = pygame.image.load("background1.png")
         background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
     except pygame.error as e:
         print(f"Erro ao carregar a imagem de fundo: {e}")
@@ -85,7 +97,10 @@ def game_loop(screen, WIDTH, HEIGHT):
             elif event.type == SPAWN_EVENT and not question_active:
                 lane = random.choice([0, 1, 2])
                 obstacle_x = LANE_POSITIONS[lane]
-                obstacles.append(pygame.Rect(obstacle_x, -OBSTACLE_HEIGHT, OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+                obstacles.append({
+                    'rect': pygame.Rect(obstacle_x, -OBSTACLE_HEIGHT, OBSTACLE_WIDTH, OBSTACLE_HEIGHT),
+                    'image': random.choice([obstacle_image1, obstacle_image2, obstacle_image3])  # Escolhe aleatoriamente a imagem do obstáculo
+                })
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player.move_left()
@@ -98,13 +113,13 @@ def game_loop(screen, WIDTH, HEIGHT):
         # Movimentar e desenhar obstáculos
         if not question_active:
             for obstacle in obstacles[:]:
-                obstacle.y += obstacle_speed
-                if obstacle.y > HEIGHT:
+                obstacle['rect'].y += obstacle_speed
+                if obstacle['rect'].y > HEIGHT:
                     obstacles.remove(obstacle)
-                elif player.rect.colliderect(obstacle):
+                elif player.rect.colliderect(obstacle['rect']):
                     running = False
             for obstacle in obstacles:
-                pygame.draw.rect(screen, (255, 0, 0), obstacle)
+                screen.blit(obstacle['image'], obstacle['rect'])  # Desenha a imagem do obstáculo
 
         # Mostrar a questão e as respostas nas lanes com o delay
         if question_active:
