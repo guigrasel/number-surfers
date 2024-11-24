@@ -14,7 +14,7 @@ class Obstacle:
         self.lane_positions = lane_positions
         self.width = obstacle_width
         self.height = obstacle_height
-        self.image = pygame.transform.scale(obstacle_image, (obstacle_width, obstacle_height))  # Atualizando self.image
+        self.image = pygame.transform.scale(obstacle_image, (obstacle_width, obstacle_height)) 
         self.rect = pygame.Rect(0, -self.height, self.width, self.height)
 
     def spawn(self):

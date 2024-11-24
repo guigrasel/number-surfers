@@ -5,15 +5,14 @@ from score import Score
 
 def show_start_screen(screen, WIDTH, HEIGHT):
     font = pygame.font.SysFont(None, 36)
-    start_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 100, 150, 50)  # Ajuste na posição vertical do botão
+    start_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 100, 150, 50)
     
     top_scores = Score().get_top_scores()
 
     while True:
         screen.fill((173, 216, 230))
         draw_text("Number Surfers", font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 4, center=True)
-        
-        # Exibir os top scores
+
         draw_text("Top Scores:", font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 3, center=True)
         for i, score in enumerate(top_scores, start=1):
             draw_text(f"{i}. {score}", font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 3 + 30 * i, center=True)
@@ -38,7 +37,7 @@ def show_game_over_screen(screen, WIDTH, HEIGHT, score):
     quit_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 120, 150, 50)
     
     while True:
-        screen.fill((173, 216, 230))  # Fundo azul claro
+        screen.fill((173, 216, 230))
         draw_text("Game Over", font, (255, 0, 0), screen, WIDTH // 2, HEIGHT // 3, center=True)
         draw_text(f"Final Score: {score}", font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 2, center=True)
         
@@ -56,7 +55,7 @@ def show_game_over_screen(screen, WIDTH, HEIGHT, score):
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if restart_button.collidepoint(event.pos):
-                    return True  # Reiniciar o jogo
+                    return True
                 elif quit_button.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
