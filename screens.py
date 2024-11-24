@@ -1,13 +1,13 @@
 import pygame
 import sys
 from helpers import draw_text
-from scores import get_top_scores
+from score import Score
 
 def show_start_screen(screen, WIDTH, HEIGHT):
     font = pygame.font.SysFont(None, 36)
     start_button = pygame.Rect(WIDTH // 2 - 75, HEIGHT // 2 + 100, 150, 50)  # Ajuste na posição vertical do botão
     
-    top_scores = get_top_scores()
+    top_scores = Score().get_top_scores()
 
     while True:
         screen.fill((173, 216, 230))
@@ -18,7 +18,6 @@ def show_start_screen(screen, WIDTH, HEIGHT):
         for i, score in enumerate(top_scores, start=1):
             draw_text(f"{i}. {score}", font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 3 + 30 * i, center=True)
         
-        # Aumentar o espaço antes do botão "Start"
         pygame.draw.rect(screen, (0, 128, 0), start_button)
         draw_text("Start", font, (255, 255, 255), screen, WIDTH // 2, HEIGHT // 2 + 125, center=True)  # Ajuste na posição do texto
         

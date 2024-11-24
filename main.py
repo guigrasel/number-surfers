@@ -1,6 +1,6 @@
 import pygame
 import sys
-from screens import show_start_screen, show_game_over_screen
+from screens import show_start_screen
 from game_logic import game_loop
 
 # Inicialização do Pygame

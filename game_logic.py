@@ -3,7 +3,7 @@ import random
 from screens import show_game_over_screen
 from helpers import draw_text
 from player import Player
-from scores import save_score
+from score import Score
 from obstacle import Obstacle
 
 def game_loop(screen, WIDTH, HEIGHT):
@@ -45,8 +45,9 @@ def game_loop(screen, WIDTH, HEIGHT):
         lanes=LANE_POSITIONS,
     )
 
-    # Configurações de jogo
-    score = 0
+    # Inicializar o score
+    score = Score()
+
     obstacle_speed = 10
     speed_increment = 0.5
     increment_interval = 5000
@@ -81,7 +82,7 @@ def game_loop(screen, WIDTH, HEIGHT):
 
     while running:
         screen.blit(background_image, (0, 0))
-        score += 1
+        score.increment_score(1)  # Incrementa o score a cada iteração
 
         current_time = pygame.time.get_ticks()
 
@@ -142,9 +143,9 @@ def game_loop(screen, WIDTH, HEIGHT):
                 # Verificar se o jogador escolheu a lane correta
                 if player.rect.colliderect(pygame.Rect(LANE_POSITIONS[correct_lane], player.rect.top, PLAYER_WIDTH, PLAYER_HEIGHT)):
                     question_active = False  # A questão é resolvida
-                    score += 1000  # Pontuação adicional
+                    score.increment_score(1000)  # Pontuação adicional
                     message_displayed_time = current_time  # Marca o momento de exibição da mensagem
-                    message_active = True  # Ativa a exibição da mensage
+                    message_active = True  # Ativa a exibição da mensagem
                     obstacles = []  # Limpar obstáculos após a resposta correta
 
                 # Se o jogador errar, o jogo acaba
@@ -155,7 +156,7 @@ def game_loop(screen, WIDTH, HEIGHT):
 
         # Mostrar pontuação
         screen.blit(score_background, (0, 0))  # Exibe o fundo do score
-        draw_text(f"Score: {score}", font, (255, 255, 255), screen, 45, 10)
+        draw_text(f"Score: {score.current_score}", font, (255, 255, 255), screen, 45, 10)
         
         # Exibir a mensagem de acerto
         if message_active and current_time - message_displayed_time < message_duration:
@@ -167,7 +168,8 @@ def game_loop(screen, WIDTH, HEIGHT):
         clock.tick(30)
 
     if not running:
-        save_score(score)  # Salva o score ao terminar o jogo
-        restart = show_game_over_screen(screen, WIDTH, HEIGHT, score)
+        score.save_score()  # Salva o score ao terminar o jogo
+        restart = show_game_over_screen(screen, WIDTH, HEIGHT, score.current_score)
         if restart:
             game_loop(screen, WIDTH, HEIGHT)
+
