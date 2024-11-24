@@ -11,10 +11,17 @@ def game_loop(screen, WIDTH, HEIGHT):
     OBSTACLE_WIDTH, OBSTACLE_HEIGHT = 110, 110
     LANE_POSITIONS = [
         110,
-        WIDTH // 2 - PLAYER_WIDTH // 2,
+        350,
         590,
     ]
 
+    try:
+        score_background = pygame.image.load("caixa_madeira_bg.jpg")
+        score_background = pygame.transform.scale(score_background, (250, 50))
+    except pygame.error as e:
+        print(f"Erro ao carregar as imagens de fundo: {e}")
+        pygame.quit()
+    
     # Carregar as imagens dos obstáculos
     try:
         obstacle_image1 = pygame.image.load("obstaculo1.png")
@@ -54,6 +61,10 @@ def game_loop(screen, WIDTH, HEIGHT):
     correct_lane = None
     question_text = ""
     answers = []
+    
+    message_displayed_time = None
+    message_duration = 2000 
+    message_active = False
 
     font = pygame.font.SysFont(None, 36)
 
@@ -124,7 +135,6 @@ def game_loop(screen, WIDTH, HEIGHT):
         # Mostrar a questão e as respostas nas lanes com o delay
         if question_active:
             if current_time - question_displayed_time < 2000:  # Exibir a questão por 2 segundos
-                # Exibir a questão
                 draw_text(question_text, font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 4, center=True)
             elif current_time - question_displayed_time >= 2000 and current_time - question_displayed_time < 4000:  # Esperar mais 2 segundos
                 # Exibir as alternativas nas lanes
@@ -135,6 +145,8 @@ def game_loop(screen, WIDTH, HEIGHT):
                 if player.rect.colliderect(pygame.Rect(LANE_POSITIONS[correct_lane], player.rect.top, PLAYER_WIDTH, PLAYER_HEIGHT)):
                     question_active = False  # A questão é resolvida
                     score += 1000  # Pontuação adicional
+                    message_displayed_time = current_time  # Marca o momento de exibição da mensagem
+                    message_active = True  # Ativa a exibição da mensage
                     obstacles = []  # Limpar obstáculos após a resposta correta
 
                 # Se o jogador errar, o jogo acaba
@@ -144,7 +156,14 @@ def game_loop(screen, WIDTH, HEIGHT):
                     running = False
 
         # Mostrar pontuação
-        draw_text(f"Score: {score}", font, (255, 255, 255), screen, 10, 10)
+        screen.blit(score_background, (0, 0))  # Exibe o fundo do score
+        draw_text(f"Score: {score}", font, (255, 255, 255), screen, 45, 10)
+        
+        # Exibir a mensagem de acerto
+        if message_active and current_time - message_displayed_time < message_duration:
+            draw_text("Você acertou! +1000 pontos!", font, (255, 255, 0), screen, WIDTH // 2, HEIGHT // 2, center=True)
+        elif message_active:
+            message_active = False  # Desativa a mensagem após o tempo limite
 
         pygame.display.flip()
         clock.tick(30)
