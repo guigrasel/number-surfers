@@ -4,7 +4,7 @@ from screens import show_game_over_screen
 from helpers import draw_text
 from player import Player
 from score import Score
-from obstacle import Obstacle
+from obstacle import create_random_obstacle
 
 def game_loop(screen, WIDTH, HEIGHT):
     # Configurações iniciais
@@ -59,7 +59,7 @@ def game_loop(screen, WIDTH, HEIGHT):
     question_interval = 10000  # Intervalo de 10 segundos para gerar questões
     last_question_time = pygame.time.get_ticks()
     question_active = False
-    question_displayed_time = None  # Controla o tempo de exibição da questão
+    question_displayed_time = None
     correct_lane = None
     question_text = ""
     answers = []
@@ -108,7 +108,7 @@ def game_loop(screen, WIDTH, HEIGHT):
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == SPAWN_EVENT and not question_active:
-                new_obstacle = Obstacle(LANE_POSITIONS, OBSTACLE_WIDTH, OBSTACLE_HEIGHT, OBSTACLE_IMAGES)
+                new_obstacle = create_random_obstacle(LANE_POSITIONS, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
                 new_obstacle.spawn()
                 obstacles.append(new_obstacle)
             elif event.type == pygame.KEYDOWN:
