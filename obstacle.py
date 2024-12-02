@@ -2,9 +2,9 @@ import pygame
 import random
 
 try:
-    obstacle_image1 = pygame.image.load("obstaculo1.png")
-    obstacle_image2 = pygame.image.load("obstaculo2.png")
-    obstacle_image3 = pygame.image.load("obstaculo3.png")
+    obstacle_image1 = pygame.image.load("images/obstaculo1.png")
+    obstacle_image2 = pygame.image.load("images/obstaculo2.png")
+    obstacle_image3 = pygame.image.load("images/obstaculo3.png")
 except pygame.error as e:
     print(f"Erro ao carregar a imagem de obstáculo: {e}")
     pygame.quit()
@@ -30,7 +30,7 @@ class Obstacle:
 
     def check_collision(self, player_rect):
         return self.rect.colliderect(player_rect)
-      
+
 class ObstacleBox(Obstacle):
     def __init__(self, lane_positions, obstacle_width, obstacle_height):
         super().__init__(lane_positions, obstacle_width, obstacle_height, obstacle_image1)

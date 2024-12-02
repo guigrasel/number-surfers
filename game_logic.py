@@ -17,27 +17,16 @@ def game_loop(screen, WIDTH, HEIGHT):
     ]
 
     try:
-        score_background = pygame.image.load("caixa_madeira_bg.jpg")
+        score_background = pygame.image.load("images/caixa_madeira_bg.jpg")
         score_background = pygame.transform.scale(score_background, (250, 50))
     except pygame.error as e:
         print(f"Erro ao carregar as imagens de fundo: {e}")
         pygame.quit()
     
-    # Carregar as imagens dos obstáculos
-    try:
-        obstacle_image1 = pygame.image.load("obstaculo1.png")
-        obstacle_image2 = pygame.image.load("obstaculo2.png")
-        obstacle_image3 = pygame.image.load("obstaculo3.png")
-    except pygame.error as e:
-        print(f"Erro ao carregar a imagem de obstáculo: {e}")
-        pygame.quit()
-
-    OBSTACLE_IMAGES = [obstacle_image1, obstacle_image2, obstacle_image3]
-    OBSTACLE_IMAGES = [pygame.transform.scale(img, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT)) for img in OBSTACLE_IMAGES]
 
     # Inicializar o jogador
     player = Player(
-        "player.png",
+        "images/player.png",
         initial_x=LANE_POSITIONS[1],  # Meio
         initial_y=HEIGHT - PLAYER_HEIGHT - 20,
         width=PLAYER_WIDTH,
@@ -71,7 +60,7 @@ def game_loop(screen, WIDTH, HEIGHT):
     font = pygame.font.SysFont(None, 36)
 
     try:
-        background_image = pygame.image.load("background1.png")
+        background_image = pygame.image.load("images/background1.png")
         background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
     except pygame.error as e:
         print(f"Erro ao carregar a imagem de fundo: {e}")
@@ -135,7 +124,7 @@ def game_loop(screen, WIDTH, HEIGHT):
         if question_active:
             if current_time - question_displayed_time < 2000:  # Exibir a questão por 2 segundos
                 draw_text(question_text, font, (0, 0, 0), screen, WIDTH // 2, HEIGHT // 4, center=True)
-            elif current_time - question_displayed_time >= 2000 and current_time - question_displayed_time < 4000:  # Esperar mais 2 segundos
+            elif current_time - question_displayed_time >= 2000 and current_time - question_displayed_time < 5000:  # Esperar mais 3 segundos
                 # Exibir as alternativas nas lanes
                 for i, answer in enumerate(answers):
                     draw_text(str(answer), font, (0, 0, 0), screen, LANE_POSITIONS[i] + PLAYER_WIDTH // 2, HEIGHT // 3, center=True)
